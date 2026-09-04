@@ -8,6 +8,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { useCartStore } from "@/store/cart.store";
+
+import {
+  calculateDiscount,
+  calculateFinalTotal,
+  calculateSubtotal,
+  calculateTax,
+} from "@/utils/cart.utils";
+import { useNavigate } from "react-router-dom";
+
 interface PaymentSummaryStepProps {
   onBack: () => void;
 }
@@ -15,13 +25,19 @@ interface PaymentSummaryStepProps {
 const PaymentSummaryStep = ({
   onBack,
 }: PaymentSummaryStepProps) => {
-  const subtotal = 239.97;
-  const shipping:number = 0;
-  const total = subtotal + shipping;
+  const items = useCartStore((state) => state.items);
+
+  const subtotal = calculateSubtotal(items);
+  const tax = calculateTax(subtotal);
+  const discount = calculateDiscount(subtotal);
+  const finalTotal = calculateFinalTotal(subtotal);
+
+  const navigate = useNavigate();
 
   const handlePlaceOrder = () => {
-    // TODO: Call your place-order API here
     console.log("Order placed");
+
+    navigate("/order-success");
   };
 
   return (
@@ -32,6 +48,7 @@ const PaymentSummaryStep = ({
         </CardHeader>
 
         <CardContent className="space-y-6">
+          {/* Payment Method */}
           <div className="flex items-center gap-3 rounded-lg border p-4">
             <CheckCircle2 className="h-5 w-5 text-primary" />
 
@@ -46,41 +63,57 @@ const PaymentSummaryStep = ({
             </div>
           </div>
 
+          {/* Order Summary */}
           <div>
             <h3 className="mb-4 font-medium">
               Order Summary
             </h3>
 
             <div className="space-y-3">
+              {/* Subtotal */}
               <div className="flex justify-between">
                 <span>Subtotal</span>
                 <span>${subtotal.toFixed(2)}</span>
               </div>
 
+              {/* Tax */}
               <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>
-                  {shipping === 0
-                    ? "Free"
-                    : `$${shipping.toFixed(2)}`}
+                <span>Tax (5%)</span>
+                <span>${tax.toFixed(2)}</span>
+              </div>
+
+              {/* Discount */}
+              <div className="flex justify-between">
+                <span>Discount</span>
+
+                <span className="text-green-600">
+                  -${discount.toFixed(2)}
                 </span>
               </div>
 
+              {/* Final Total */}
               <div className="border-t pt-4">
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>${finalTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* Actions */}
           <div className="flex justify-between">
-            <Button variant="outline" onClick={onBack}>
+            <Button
+              variant="outline"
+              onClick={onBack}
+            >
               Back
             </Button>
 
-            <Button onClick={handlePlaceOrder}>
+            <Button
+              onClick={handlePlaceOrder}
+              disabled={items.length === 0}
+            >
               Place Order
             </Button>
           </div>

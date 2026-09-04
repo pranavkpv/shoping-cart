@@ -23,6 +23,10 @@ const NotFoundPage = lazy(
   () => import("./pages/NotFoundPage")
 );
 
+const OrderSuccessPage = lazy(
+  () => import("./pages/OrderSuccessPage")
+);
+
 const PageLoader = () => (
   <div className="flex min-h-[60vh] items-center justify-center">
     <p className="text-lg">Loading...</p>
@@ -58,6 +62,10 @@ export const router = createBrowserRouter([
           {
             path: "checkout",
             element: <CheckoutPage />,
+          },
+          {
+            path: "order-success",
+            element: <OrderSuccessPage />,
           },
           {
             path: "*",
