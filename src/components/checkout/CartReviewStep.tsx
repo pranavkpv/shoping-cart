@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,8 @@ interface CartReviewStepProps {
   onNext: () => void;
 }
 
+const ITEMS_PER_PAGE = 5;
+
 const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
   const cartItems = useCartStore((state) => state.items);
 
@@ -32,7 +35,49 @@ const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
     (state) => state.updateQuantity
   );
 
-  // Same calculation logic as CartSummary
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Pagination calculations
+  const totalPages = Math.ceil(
+    cartItems.length / ITEMS_PER_PAGE
+  );
+
+  const startIndex =
+    (currentPage - 1) * ITEMS_PER_PAGE;
+
+  const paginatedItems = cartItems.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
+  // If removing an item makes the current page invalid,
+  // move back to the last available page.
+  useEffect(() => {
+    if (
+      totalPages > 0 &&
+      currentPage > totalPages
+    ) {
+      setCurrentPage(totalPages);
+    }
+
+    if (totalPages === 0) {
+      setCurrentPage(1);
+    }
+  }, [cartItems.length, currentPage, totalPages]);
+
+  const handlePrevious = () => {
+    setCurrentPage((page) =>
+      Math.max(page - 1, 1)
+    );
+  };
+
+  const handleNext = () => {
+    setCurrentPage((page) =>
+      Math.min(page + 1, totalPages)
+    );
+  };
+
+  // Cart calculations
   const subtotal = calculateSubtotal(cartItems);
   const tax = calculateTax(subtotal);
   const discount = calculateDiscount(subtotal);
@@ -52,72 +97,102 @@ const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
               Your cart is empty.
             </p>
           ) : (
-            cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center gap-4 border-b pb-6 last:border-0"
-              >
-                <img
-                  src={item.thumbnail}
-                  alt={item.title}
-                  className="h-20 w-20 rounded-md object-cover"
-                />
+            <>
+              {/* Paginated Cart Items */}
+              {paginatedItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex items-center gap-4 border-b pb-6 last:border-0"
+                >
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    className="h-20 w-20 rounded-md object-cover"
+                  />
 
-                <div className="flex-1">
-                  <h3 className="font-medium">
-                    {item.title}
-                  </h3>
+                  <div className="flex-1">
+                    <h3 className="font-medium">
+                      {item.title}
+                    </h3>
 
-                  <p className="text-sm text-muted-foreground">
-                    ${item.price.toFixed(2)}
-                  </p>
-                </div>
+                    <p className="text-sm text-muted-foreground">
+                      ${item.price.toFixed(2)}
+                    </p>
+                  </div>
 
-                {/* Quantity */}
-                <div className="flex items-center gap-2">
+                  {/* Quantity */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        updateQuantity(
+                          item.id,
+                          item.quantity - 1
+                        )
+                      }
+                      disabled={item.quantity <= 1}
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+
+                    <span className="w-8 text-center">
+                      {item.quantity}
+                    </span>
+
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() =>
+                        updateQuantity(
+                          item.id,
+                          item.quantity + 1
+                        )
+                      }
+                      disabled={item.quantity >= 5}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+
+                  {/* Remove */}
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
                     onClick={() =>
-                      updateQuantity(
-                        item.id,
-                        item.quantity - 1
-                      )
+                      removeFromCart(item.id)
                     }
-                    disabled={item.quantity <= 1}
                   >
-                    <Minus className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-4 pt-2">
+                  <Button
+                    variant="outline"
+                    onClick={handlePrevious}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
                   </Button>
 
-                  <span className="w-8 text-center">
-                    {item.quantity}
+                  <span className="text-sm text-muted-foreground">
+                    Page {currentPage} of {totalPages}
                   </span>
 
                   <Button
                     variant="outline"
-                    size="icon"
-                    onClick={() =>
-                      updateQuantity(
-                        item.id,
-                        item.quantity + 1
-                      )
-                    }
-                    disabled={item.quantity >= 5}
+                    onClick={handleNext}
+                    disabled={currentPage === totalPages}
                   >
-                    <Plus className="h-4 w-4" />
+                    Next
                   </Button>
                 </div>
-
-                {/* Remove */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeFromCart(item.id)}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))
+              )}
+            </>
           )}
         </CardContent>
       </Card>
