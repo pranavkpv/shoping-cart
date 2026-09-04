@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { z } from "zod";
+import { ArrowLeft, ArrowRight, MapPin, User, Phone, Home } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,30 +10,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { shippingSchema, type ShippingData } from "@/schemas/shipping.schema";
+
 interface ShippingStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
-const shippingSchema = z.object({
-  fullName: z.string().min(2, "Full name is required"),
-  address: z.string().min(5, "Address is required"),
-  city: z.string().min(2, "City is required"),
-  postalCode: z
-    .string()
-    .min(4, "Postal code is required")
-    .max(10, "Invalid postal code"),
-  phone: z
-    .string()
-    .min(10, "Phone number must be at least 10 digits"),
-});
-
-type ShippingData = z.infer<typeof shippingSchema>;
-
-const ShippingStep = ({
-  onNext,
-  onBack,
-}: ShippingStepProps) => {
+const ShippingStep = ({ onNext, onBack }: ShippingStepProps) => {
   const [formData, setFormData] = useState<ShippingData>({
     fullName: "",
     address: "",
@@ -46,10 +30,7 @@ const ShippingStep = ({
     Partial<Record<keyof ShippingData, string>>
   >({});
 
-  const handleChange = (
-    field: keyof ShippingData,
-    value: string
-  ) => {
+  const handleChange = (field: keyof ShippingData, value: string) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -65,13 +46,10 @@ const ShippingStep = ({
     const result = shippingSchema.safeParse(formData);
 
     if (!result.success) {
-      const fieldErrors: Partial<
-        Record<keyof ShippingData, string>
-      > = {};
+      const fieldErrors: Partial<Record<keyof ShippingData, string>> = {};
 
       result.error.issues.forEach((issue) => {
         const field = issue.path[0] as keyof ShippingData;
-
         if (!fieldErrors[field]) {
           fieldErrors[field] = issue.message;
         }
@@ -86,124 +64,119 @@ const ShippingStep = ({
   };
 
   return (
-    <Card className="mx-auto max-w-3xl">
-      <CardHeader>
-        <CardTitle>Shipping Information</CardTitle>
+    <Card className="mx-auto max-w-2xl border-border/60 shadow-xs">
+      <CardHeader className="border-b border-border/40 bg-muted/20 px-4 py-4 sm:px-6">
+        <CardTitle className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
+          <MapPin className="h-5 w-5 text-primary" />
+          <span>Shipping Address</span>
+        </CardTitle>
       </CardHeader>
 
-      <CardContent>
-        <div className="grid gap-6">
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Full Name
+      <CardContent className="p-4 sm:p-6 space-y-6">
+        <div className="grid gap-5">
+          {/* Full Name */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <User className="h-3.5 w-3.5" /> Full Name
             </label>
-
             <Input
               value={formData.fullName}
-              onChange={(e) =>
-                handleChange("fullName", e.target.value)
-              }
+              onChange={(e) => handleChange("fullName", e.target.value)}
               placeholder="John Doe"
+              className={errors.fullName ? "border-destructive focus-visible:ring-destructive" : ""}
             />
-
             {errors.fullName && (
-              <p className="mt-1 text-sm text-destructive">
+              <p className="text-red-500 mt-1 font-medium">
                 {errors.fullName}
               </p>
             )}
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Address
+          {/* Street Address */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Home className="h-3.5 w-3.5" /> Street Address
             </label>
-
             <Input
               value={formData.address}
-              onChange={(e) =>
-                handleChange("address", e.target.value)
-              }
-              placeholder="123 Main Street"
+              onChange={(e) => handleChange("address", e.target.value)}
+              placeholder="123 Main Street, Apt 4B"
+              className={errors.address ? "border-destructive focus-visible:ring-destructive" : ""}
             />
-
             {errors.address && (
-              <p className="mt-1 text-sm text-destructive">
+              <p className="text-red-500 mt-1 font-medium">
                 {errors.address}
               </p>
             )}
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div>
-              <label className="mb-2 block text-sm font-medium">
+          {/* City & Postal Code */}
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 City
               </label>
-
               <Input
                 value={formData.city}
-                onChange={(e) =>
-                  handleChange("city", e.target.value)
-                }
+                onChange={(e) => handleChange("city", e.target.value)}
                 placeholder="New York"
+                className={errors.city ? "border-destructive focus-visible:ring-destructive" : ""}
               />
-
               {errors.city && (
-                <p className="mt-1 text-sm text-destructive">
+                <p className="text-red-500 mt-1 font-medium">
                   {errors.city}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="mb-2 block text-sm font-medium">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Postal Code
               </label>
-
               <Input
                 value={formData.postalCode}
-                onChange={(e) =>
-                  handleChange("postalCode", e.target.value)
-                }
+                onChange={(e) => handleChange("postalCode", e.target.value)}
                 placeholder="10001"
+                className={errors.postalCode ? "border-destructive focus-visible:ring-destructive" : ""}
               />
-
               {errors.postalCode && (
-                <p className="mt-1 text-sm text-destructive">
+                <p className="text-red-500 mt-1 font-medium">
                   {errors.postalCode}
                 </p>
               )}
             </div>
           </div>
 
-          <div>
-            <label className="mb-2 block text-sm font-medium">
-              Phone
+          {/* Phone Number */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5" /> Phone Number
             </label>
-
             <Input
               value={formData.phone}
-              onChange={(e) =>
-                handleChange("phone", e.target.value)
-              }
-              placeholder="9876543210"
+              onChange={(e) => handleChange("phone", e.target.value)}
+              placeholder="+1 (555) 000-0000"
+              className={errors.phone ? "border-destructive focus-visible:ring-destructive" : ""}
             />
-
             {errors.phone && (
-              <p className="mt-1 text-sm text-destructive">
+              <p className="text-red-500 mt-1 font-medium">
                 {errors.phone}
               </p>
             )}
           </div>
+        </div>
 
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={onBack}>
-              Back
-            </Button>
+        {/* Action Buttons */}
+        <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/60">
+          <Button variant="outline" onClick={onBack} className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back</span>
+          </Button>
 
-            <Button onClick={handleSubmit}>
-              Continue to Payment
-            </Button>
-          </div>
+          <Button onClick={handleSubmit} className="gap-2 font-semibold">
+            <span>Continue to Payment</span>
+            <ArrowRight className="h-4 w-4" />
+          </Button>
         </div>
       </CardContent>
     </Card>
