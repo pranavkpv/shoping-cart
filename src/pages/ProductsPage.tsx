@@ -1,7 +1,10 @@
 import { useProducts } from "../hooks/useProducts";
+import { useProductFilters } from "../hooks/useProductFilters";
+
 import ApiState from "../components/common/ApiState";
 import ProductGrid from "../components/products/ProductGrid";
 import ProductSkeletonGrid from "../components/products/ProductSkeletonGrid";
+import ProductFilters from "../components/products/ProductFilters";
 
 const ProductsPage = () => {
   const {
@@ -11,6 +14,27 @@ const ProductsPage = () => {
     error,
     isEmpty,
   } = useProducts();
+
+  const {
+    filteredProducts,
+    categories,
+
+    search,
+    setSearch,
+
+    category,
+    setCategory,
+
+    minPrice,
+    setMinPrice,
+
+    maxPrice,
+    setMaxPrice,
+
+    clearFilters,
+  } = useProductFilters({
+    products,
+  });
 
   return (
     <ApiState
@@ -32,7 +56,20 @@ const ProductsPage = () => {
           </p>
         </div>
 
-        <ProductGrid products={products} />
+        <ProductFilters
+          search={search}
+          setSearch={setSearch}
+          category={category}
+          setCategory={setCategory}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          categories={categories}
+          clearFilters={clearFilters}
+        />
+
+        <ProductGrid products={filteredProducts} />
       </section>
     </ApiState>
   );
