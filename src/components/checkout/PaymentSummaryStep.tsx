@@ -26,6 +26,10 @@ const PaymentSummaryStep = ({
   onBack,
 }: PaymentSummaryStepProps) => {
   const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore(
+    (state) => state.clearCart
+  );
+
 
   const subtotal = calculateSubtotal(items);
   const tax = calculateTax(subtotal);
@@ -36,6 +40,7 @@ const PaymentSummaryStep = ({
 
   const handlePlaceOrder = () => {
     console.log("Order placed");
+    clearCart()
 
     navigate("/order-success");
   };
