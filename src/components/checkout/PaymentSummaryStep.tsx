@@ -16,7 +16,7 @@ const PaymentSummaryStep = ({
   onBack,
 }: PaymentSummaryStepProps) => {
   const subtotal = 239.97;
-  const shipping = 0;
+  const shipping:number = 0;
   const total = subtotal + shipping;
 
   const handlePlaceOrder = () => {

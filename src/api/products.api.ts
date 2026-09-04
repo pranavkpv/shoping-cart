@@ -3,10 +3,10 @@ import {
   type ProductsResponse,
 } from "../schemas/product.schema";
 
-const PRODUCTS_API_URL = "https://dummyjson.com/products";
+import { config } from "../config";
 
 export const fetchProducts = async (): Promise<ProductsResponse> => {
-  const response = await fetch(PRODUCTS_API_URL);
+  const response = await fetch(config.productsApiUrl);
 
   if (!response.ok) {
     throw new Error("Failed to fetch products");
