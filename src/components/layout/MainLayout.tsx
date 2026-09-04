@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
+import { Toaster } from "sonner";
 
 const MainLayout = () => {
   return (
@@ -8,9 +9,10 @@ const MainLayout = () => {
         <Header />
       </header>
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 transition-all duration-200">
+      <main className="flex-1 w-full  px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-10 transition-all duration-200">
         <Outlet />
       </main>
+      <Toaster position="bottom-right" />
 
       <footer className="w-full border-t border-border/40 bg-muted/30 py-6 sm:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-muted-foreground">
