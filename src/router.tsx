@@ -7,6 +7,7 @@ const CartPage = lazy(() => import("./pages/CartPage"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 const OrderSuccessPage = lazy(() => import("./pages/OrderSuccessPage"));
+const ProductDetailPage = lazy(()=>import("./pages/ProductDetailPage"))
 
 const PageLoader = () => (
   <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
           {
             path: "products",
             element: <ProductsPage />,
+          },
+          {
+            path: "products/:id",
+            element: <ProductDetailPage />,
           },
           {
             path: "cart",
