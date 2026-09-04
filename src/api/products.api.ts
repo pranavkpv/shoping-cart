@@ -5,8 +5,16 @@ import {
 
 import { config } from "../config";
 
-export const fetchProducts = async (): Promise<ProductsResponse> => {
-  const response = await fetch(config.productsApiUrl);
+export const fetchProducts = async (
+  limit: number,
+  skip: number
+): Promise<ProductsResponse> => {
+  const url = new URL(config.productsApiUrl);
+
+  url.searchParams.set("limit", String(limit));
+  url.searchParams.set("skip", String(skip));
+
+  const response = await fetch(url.toString());
 
   if (!response.ok) {
     throw new Error("Failed to fetch products");

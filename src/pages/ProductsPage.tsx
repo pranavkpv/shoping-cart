@@ -1,5 +1,8 @@
+import { useCallback } from "react";
+
 import { useProducts } from "../hooks/useProducts";
 import { useProductFilters } from "../hooks/useProductFilters";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 import ApiState from "../components/common/ApiState";
 import ProductGrid from "../components/products/ProductGrid";
@@ -13,6 +16,9 @@ const ProductsPage = () => {
     isError,
     error,
     isEmpty,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useProducts();
 
   const {
@@ -34,6 +40,22 @@ const ProductsPage = () => {
     clearFilters,
   } = useProductFilters({
     products,
+  });
+
+  const handleLoadMore = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
+
+  const loadMoreRef = useInfiniteScroll({
+    onLoadMore: handleLoadMore,
+    hasMore: hasNextPage,
+    isLoading: isFetchingNextPage,
   });
 
   return (
@@ -70,6 +92,24 @@ const ProductsPage = () => {
         />
 
         <ProductGrid products={filteredProducts} />
+
+        {/* Infinite scroll trigger */}
+        <div
+          ref={loadMoreRef}
+          className="mt-8 flex justify-center"
+        >
+          {isFetchingNextPage && (
+            <p className="text-muted-foreground">
+              Loading more products...
+            </p>
+          )}
+
+          {!hasNextPage && products.length > 0 && (
+            <p className="text-muted-foreground">
+              No more products.
+            </p>
+          )}
+        </div>
       </section>
     </ApiState>
   );
