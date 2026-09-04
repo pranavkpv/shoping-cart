@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useCartStore } from "../store/cart.store";
 
 import CartItem from "../components/cart/CartItem";
 import CartSummary from "../components/cart/CartSummary";
+import Pagination from "@/components/common/Pagination";
 
 import { Button } from "@/components/ui/button";
 
@@ -31,15 +32,17 @@ const CartPage = () => {
     startIndex + ITEMS_PER_PAGE
   );
 
-  const handlePrevious = () => {
-    setCurrentPage((page) => Math.max(page - 1, 1));
-  };
+  // Keep page valid when items are removed
+  useEffect(() => {
+    if (totalPages === 0) {
+      setCurrentPage(1);
+      return;
+    }
 
-  const handleNext = () => {
-    setCurrentPage((page) =>
-      Math.min(page + 1, totalPages)
-    );
-  };
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [items.length, currentPage, totalPages]);
 
   if (items.length === 0) {
     return (
@@ -93,30 +96,14 @@ const CartPage = () => {
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </Button>
-
-              <span className="text-sm">
-                Page {currentPage} of {totalPages}
-              </span>
-
-              <Button
-                variant="outline"
-                onClick={handleNext}
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </Button>
-            </div>
-          )}
+          {/* Reusable Pagination */}
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
         </div>
 
         {/* Cart Summary */}

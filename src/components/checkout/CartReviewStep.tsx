@@ -17,6 +17,7 @@ import {
   calculateSubtotal,
   calculateTax,
 } from "@/utils/cart.utils";
+import Pagination from "../common/Pagination";
 
 interface CartReviewStepProps {
   onNext: () => void;
@@ -24,8 +25,12 @@ interface CartReviewStepProps {
 
 const ITEMS_PER_PAGE = 5;
 
-const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
-  const cartItems = useCartStore((state) => state.items);
+const CartReviewStep = ({
+  onNext,
+}: CartReviewStepProps) => {
+  const cartItems = useCartStore(
+    (state) => state.items
+  );
 
   const removeFromCart = useCartStore(
     (state) => state.removeFromCart
@@ -37,7 +42,6 @@ const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Pagination calculations
   const totalPages = Math.ceil(
     cartItems.length / ITEMS_PER_PAGE
   );
@@ -50,26 +54,17 @@ const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
     startIndex + ITEMS_PER_PAGE
   );
 
-  // If removing an item makes the current page invalid,
-  // move back to the last available page.
   useEffect(() => {
-    if (
-      totalPages > 0 &&
-      currentPage > totalPages
-    ) {
-      setCurrentPage(totalPages);
-    }
-
     if (totalPages === 0) {
       setCurrentPage(1);
+      return;
+    }
+
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
     }
   }, [cartItems.length, currentPage, totalPages]);
 
-  const handlePrevious = () => {
-    setCurrentPage((page) =>
-      Math.max(page - 1, 1)
-    );
-  };
 
   const handleNext = () => {
     setCurrentPage((page) =>
@@ -170,26 +165,12 @@ const CartReviewStep = ({ onNext }: CartReviewStepProps) => {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-4 pt-2">
-                  <Button
-                    variant="outline"
-                    onClick={handlePrevious}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </Button>
-
-                  <span className="text-sm text-muted-foreground">
-                    Page {currentPage} of {totalPages}
-                  </span>
-
-                  <Button
-                    variant="outline"
-                    onClick={handleNext}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </Button>
+                <div className="pt-2">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
                 </div>
               )}
             </>
