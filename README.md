@@ -1,60 +1,80 @@
 # ShoppingCart Application
 
-A responsive e-commerce shopping cart web application built with React 19, TypeScript, Vite, Tailwind CSS, Zustand, TanStack Query, and Zod. Users can browse, search, and filter products from an external API, manage their shopping cart with real-time total and tax calculations, and complete a multi-step checkout flow.
+An interactive, fully responsive e-commerce web application where users can browse products, search and filter items, manage a shopping cart with live calculations, and complete a multi-step checkout flow.
 
 ---
 
-## 🚀 Live Demo & Repository
-
-* **Live Application:** [https://your-deployment-url.vercel.app](https://your-deployment-url.vercel.app)
-* **GitHub Repository:** [https://github.com/your-username/shopping-cart](https://github.com/your-username/shopping-cart)
+## 📋 Table of Contents
+- [Project Overview](#-project-overview)
+- [Technologies Used](#-technologies-used)
+- [API Used](#-api-used)
+- [Features Completed](#-features-completed)
+- [Setup Instructions](#-setup-instructions)
+- [Commands to Run the Project](#-commands-to-run-the-project)
+- [Known Limitations](#-known-limitations)
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## 🌐 Project Overview
+The ShoppingCart Application provides a modern shopping experience built with React 19 and TypeScript. It features client-side product filtering, global cart state management with automatic `localStorage` persistence, runtime Zod validations for both API data and checkout forms, and a structured multi-step checkout pipeline.
 
-* **Frontend Framework:** React 19 + TypeScript
-* **Build Tool:** Vite
-* **Package Manager:** pnpm
-* **Styling:** Tailwind CSS + Lucide React (Icons) + shadcn/ui components
-* **State Management:** Zustand (with `persist` middleware for `localStorage`)
-* **Data Fetching & Caching:** TanStack Query (React Query)
-* **Schema Validation:** Zod
+---
+
+## 💻 Technologies Used
+* **Frontend Framework:** React 19[cite: 1]
+* **Language:** TypeScript[cite: 1]
+* **Build Tool:** Vite[cite: 1]
+* **Package Manager:** pnpm[cite: 1]
+* **Styling & UI:** Tailwind CSS[cite: 1], Lucide React (Icons), and shadcn/ui components
+* **State Management:** Zustand (with `persist` middleware)[cite: 1]
+* **Data Fetching & Caching:** TanStack Query (React Query)[cite: 1]
+* **Schema Validation:** Zod[cite: 1]
+
+---
+
+## 🔌 API Used
+* **Product API:** [DummyJSON Products API](https://dummyjson.com/products)[cite: 1]
+* **Data Fetching:** Managed using `@tanstack/react-query` to handle caching, loading indicators, and error states[cite: 1].
+* **API Validation:** All incoming product payloads are validated at runtime using Zod schemas before being rendered in the interface[cite: 1].
 
 ---
 
 ## ✨ Features Completed
 
-### 🛒 Product Browsing & Filtering
-* **API Integration:** Fetches real product data from [DummyJSON Products API](https://dummyjson.com/products).
-* **Validation:** Validates incoming API responses against a Zod schema before displaying data.
-* **Search & Filter:** Search products by title and filter by category and price range using a reusable custom hook.
-* **UI Feedback:** Handled loading states, API error messages, and empty filter result states.
+### 1. Product Listing & Catalog
+* Responsive grid layout displaying product image, title, category, price, and rating[cite: 1].
+* State feedback for API loading, server error handling, and empty catalog scenarios.
 
-### 🛍️ Cart Management & Calculations
-* **Global Store:** State managed with Zustand.
-* **Item Controls:** Add items, remove items, clear cart, and adjust quantities (enforced minimum of 1 and maximum of 5).
-* **Cart Summary Rules:**
-  * **Subtotal:** Sum of all item price totals.
-  * **Tax:** Fixed 5% tax calculated on the subtotal.
-  * **Discount:** Automatic 10% discount applied when subtotal exceeds $100.
-  * **Checkout Gate:** Minimum checkout value of $10 required. Checkout button automatically disables with an explanatory message if the subtotal is under $10.
-* **Persistence:** Cart state persists across page refreshes using `localStorage`.
+### 2. Search & Filtering
+* Title-based search input.
+* Category and price filtering using custom React hooks (`useProductFilter`).
+* One-click "Clear Filters" action.
 
-### 💳 Multi-step Checkout Flow
-1. **Cart Review:** Itemized breakdown and complete pricing details.
-2. **Shipping Form:** Built using React state and validated with Zod (full name, email, phone number, street address, city, postal code). Displays real-time error messages under each field.
-3. **Payment Summary:** Read-only summary displaying shipping address, item list, tax, discount, and final amount.
-4. **Order Completion:** Clicking "Place Order" displays a success screen and clears the cart.
+### 3. Cart Management & Persistence
+* Global state managed through Zustand.
+* Increment, decrement, and item removal actions.
+* Quantity limits: Minimum of 1 and maximum of 5 items per product.
+* `localStorage` persistence using Zustand `persist` middleware.
+
+### 4. Cart Calculations & Gatekeeper
+* Automatic calculation of subtotal, tax (5%), and discount (10% off when subtotal exceeds $100).
+* Minimum checkout threshold of $10. Checkout button is disabled with an explanatory banner if the cart value is under $10.
+
+### 5. Multi-Step Checkout Flow
+* **Step 1: Cart Review** – Detailed breakdown of items, quantities, and cost breakdown.
+* **Step 2: Shipping Form** – Custom React state form validated with Zod (Full Name, Email, Phone Number, Address, City, Postal Code) with inline validation text.
+* **Step 3: Payment Summary** – Read-only overview of shipping address, cart contents, and final total.
+* **Completion:** Placing an order redirects to an order success screen and clears the cart state.
 
 ---
 
-## ⚙️ Environment Variables (`.env`)
+## 🛠️ Setup Instructions
 
-Environment variables allow you to store configuration settings (like API base URLs) outside your source code. This makes it easy to switch environments (development, staging, production) without altering code.
+### Prerequisites
+* [Node.js](https://nodejs.org/) (v18 or higher)
+* [pnpm](https://pnpm.io/) package manager (`npm install -g pnpm`)[cite: 1]
 
-Create a file named `.env` in the root of your project:
-
-```env
-# API Base URL for fetching products
-VITE_API_BASE_URL=[https://dummyjson.com](https://dummyjson.com)
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/your-username/shopping-cart.git](https://github.com/your-username/shopping-cart.git)
+cd shopping-cart
