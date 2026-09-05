@@ -71,10 +71,9 @@ The ShoppingCart Application provides a modern shopping experience built with Re
 ## 🛠️ Setup Instructions
 
 ### Prerequisites
-* [Node.js](https://nodejs.org/) (v18 or higher)
 * [pnpm](https://pnpm.io/) package manager (`npm install -g pnpm`)[cite: 1]
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/your-username/shopping-cart.git](https://github.com/your-username/shopping-cart.git)
+git clone https://github.com/pranavkpv/shoping-cart.git
 cd shopping-cart
