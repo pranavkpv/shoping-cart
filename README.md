@@ -1,75 +1,60 @@
-# React + TypeScript + Vite
+# ShoppingCart Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive e-commerce shopping cart web application built with React 19, TypeScript, Vite, Tailwind CSS, Zustand, TanStack Query, and Zod. Users can browse, search, and filter products from an external API, manage their shopping cart with real-time total and tax calculations, and complete a multi-step checkout flow.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Live Demo & Repository
 
-## React Compiler
+* **Live Application:** [https://your-deployment-url.vercel.app](https://your-deployment-url.vercel.app)
+* **GitHub Repository:** [https://github.com/your-username/shopping-cart](https://github.com/your-username/shopping-cart)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack & Dependencies
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+* **Frontend Framework:** React 19 + TypeScript
+* **Build Tool:** Vite
+* **Package Manager:** pnpm
+* **Styling:** Tailwind CSS + Lucide React (Icons) + shadcn/ui components
+* **State Management:** Zustand (with `persist` middleware for `localStorage`)
+* **Data Fetching & Caching:** TanStack Query (React Query)
+* **Schema Validation:** Zod
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## ✨ Features Completed
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🛒 Product Browsing & Filtering
+* **API Integration:** Fetches real product data from [DummyJSON Products API](https://dummyjson.com/products).
+* **Validation:** Validates incoming API responses against a Zod schema before displaying data.
+* **Search & Filter:** Search products by title and filter by category and price range using a reusable custom hook.
+* **UI Feedback:** Handled loading states, API error messages, and empty filter result states.
 
-```
+### 🛍️ Cart Management & Calculations
+* **Global Store:** State managed with Zustand.
+* **Item Controls:** Add items, remove items, clear cart, and adjust quantities (enforced minimum of 1 and maximum of 5).
+* **Cart Summary Rules:**
+  * **Subtotal:** Sum of all item price totals.
+  * **Tax:** Fixed 5% tax calculated on the subtotal.
+  * **Discount:** Automatic 10% discount applied when subtotal exceeds $100.
+  * **Checkout Gate:** Minimum checkout value of $10 required. Checkout button automatically disables with an explanatory message if the subtotal is under $10.
+* **Persistence:** Cart state persists across page refreshes using `localStorage`.
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+### 💳 Multi-step Checkout Flow
+1. **Cart Review:** Itemized breakdown and complete pricing details.
+2. **Shipping Form:** Built using React state and validated with Zod (full name, email, phone number, street address, city, postal code). Displays real-time error messages under each field.
+3. **Payment Summary:** Read-only summary displaying shipping address, item list, tax, discount, and final amount.
+4. **Order Completion:** Clicking "Place Order" displays a success screen and clears the cart.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## ⚙️ Environment Variables (`.env`)
 
-```
+Environment variables allow you to store configuration settings (like API base URLs) outside your source code. This makes it easy to switch environments (development, staging, production) without altering code.
+
+Create a file named `.env` in the root of your project:
+
+```env
+# API Base URL for fetching products
+VITE_API_BASE_URL=[https://dummyjson.com](https://dummyjson.com)
