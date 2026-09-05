@@ -15,7 +15,6 @@ const CheckoutPage = () => {
       if (prev < 3) {
         return (prev + 1) as CheckoutStep;
       }
-
       return prev;
     });
   };
@@ -25,37 +24,36 @@ const CheckoutPage = () => {
       if (prev > 1) {
         return (prev - 1) as CheckoutStep;
       }
-
       return prev;
     });
   };
 
   return (
-    <section className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Checkout</h1>
-        <p className="text-muted-foreground">
-          Complete your order in a few simple steps.
+    <section className="container mx-auto max-w-6xl px-4 py-8 sm:py-12">
+      {/* Header */}
+      <div className="mb-8 text-center sm:text-left">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          Checkout
+        </h1>
+        <p className="mt-1.5 text-sm sm:text-base text-muted-foreground">
+          Complete your purchase in a few simple steps.
         </p>
       </div>
 
-      <CheckoutSteps currentStep={currentStep} />
+      {/* Progress Tracker */}
+      <div className="mb-10 rounded-xl border border-border/60 bg-card p-4 sm:p-6 shadow-xs">
+        <CheckoutSteps currentStep={currentStep} />
+      </div>
 
-      <div className="mt-8">
-        {currentStep === 1 && (
-          <CartReviewStep onNext={handleNext} />
-        )}
+      {/* Step Components */}
+      <div>
+        {currentStep === 1 && <CartReviewStep onNext={handleNext} />}
 
         {currentStep === 2 && (
-          <ShippingStep
-            onNext={handleNext}
-            onBack={handleBack}
-          />
+          <ShippingStep onNext={handleNext} onBack={handleBack} />
         )}
 
-        {currentStep === 3 && (
-          <PaymentSummaryStep onBack={handleBack} />
-        )}
+        {currentStep === 3 && <PaymentSummaryStep onBack={handleBack} />}
       </div>
     </section>
   );

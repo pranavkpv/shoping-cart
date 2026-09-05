@@ -3,10 +3,18 @@ import {
   type ProductsResponse,
 } from "../schemas/product.schema";
 
-const PRODUCTS_API_URL = "https://dummyjson.com/products";
+import { config } from "../config";
 
-export const fetchProducts = async (): Promise<ProductsResponse> => {
-  const response = await fetch(PRODUCTS_API_URL);
+export const fetchProducts = async (
+  limit: number,
+  skip: number
+): Promise<ProductsResponse> => {
+  const url = new URL(config.productsApiUrl);
+
+  url.searchParams.set("limit", String(limit));
+  url.searchParams.set("skip", String(skip));
+
+  const response = await fetch(url.toString());
 
   if (!response.ok) {
     throw new Error("Failed to fetch products");

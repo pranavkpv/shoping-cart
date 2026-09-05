@@ -1,31 +1,20 @@
 import { lazy, Suspense } from "react";
-import {
-  createBrowserRouter,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
-
+import { createBrowserRouter, Navigate, Outlet } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 
-const ProductsPage = lazy(
-  () => import("./pages/ProductsPage")
-);
-
-const CartPage = lazy(
-  () => import("./pages/CartPage")
-);
-
-const CheckoutPage = lazy(
-  () => import("./pages/CheckoutPage")
-);
-
-const NotFoundPage = lazy(
-  () => import("./pages/NotFoundPage")
-);
+const ProductsPage = lazy(() => import("./pages/ProductsPage"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
+const OrderSuccessPage = lazy(() => import("./pages/OrderSuccessPage"));
+const ProductDetailPage = lazy(()=>import("./pages/ProductDetailPage"))
 
 const PageLoader = () => (
-  <div className="flex min-h-[60vh] items-center justify-center">
-    <p className="text-lg">Loading...</p>
+  <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3">
+    <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+    <p className="text-sm font-medium text-muted-foreground animate-pulse">
+      Loading page...
+    </p>
   </div>
 );
 
@@ -52,12 +41,20 @@ export const router = createBrowserRouter([
             element: <ProductsPage />,
           },
           {
+            path: "products/:id",
+            element: <ProductDetailPage />,
+          },
+          {
             path: "cart",
             element: <CartPage />,
           },
           {
             path: "checkout",
             element: <CheckoutPage />,
+          },
+          {
+            path: "order-success",
+            element: <OrderSuccessPage />,
           },
           {
             path: "*",
